@@ -21,6 +21,45 @@ def trains_in_list(wrd):
     return trains
 
 
+def clean_paths(paths):
+    new_paths = []
+    for p in paths:
+        if not p in new_paths:
+            new_paths.append(p)
+    return new_paths
+
+
+def split_lists_in_len(list):
+    ret_list = []
+    for i in list:
+        try:
+            ret_list[len(i) - 1].append(i)
+        except:
+            array_difference =  len(i) - len(ret_list)
+            for _ in range(array_difference):
+                ret_list.append([])
+            ret_list[len(i) - 1].append(i)
+    return ret_list
+
+def filter_different_endings(list_of_lists):
+    endings = []
+    temp = []
+    for l in list_of_lists:
+        if not l[-1] in endings:
+            endings.append(l[-1])
+            temp.append(l)
+        
+    return temp
+
+def remove_overhead(paths):
+    temp = []
+    sorted_by_len = split_lists_in_len(paths)
+    for l in sorted_by_len:
+        filter_different_endings(l)
+        temp.append(l[0])
+    return temp
+
+
 def overstap_mogelijkheden(station, trains):
     trains_on_station = []
     for t in trains:
@@ -30,47 +69,33 @@ def overstap_mogelijkheden(station, trains):
 
 
 def propagate(paths, trains, N):
-    temp_paths = []
+    new_paths = []
     for p in paths:
-        ovm = overstap_mogelijkheden(N, trains)
-        n_paths = []
-        #check all possible paths and ad the ones thet meet the conditions
-        for t in ovm:
-            if trains[p[-1]][-1] >= N:
+        if trains[p[-1]][-1] >= N:
+            ovm = overstap_mogelijkheden(N, trains)
+            #check all possible paths and ad the ones thet meet the conditions
+            for t in ovm:
                 if t[1] >= trains[p[-1]][1]:
-                    if t[0] == p[-1]:
+                    if not t[0] in p:
                         n_p = p + [t[0]]
-                        n_paths.append(n_p)
-                    elif not t[0] in p[:-1]:
-                        n_p = p + [t[0]]
-                        temp_paths.append(n_p)
-                    else:
-                        temp_paths.append(p)
-        temp_paths.append(p)
+                        new_paths.append(n_p)
 
-        # print(paths, n_paths, "differ")
-        # for pn in n_paths:
-        #     temp_paths.append(pn)
-        # print(paths, n_paths, 'is update')
-        # paths.remove(p)
-    return temp_paths
+
+    return paths + new_paths
 
     
-
 paths = []
 # init paths
 for t in overstap_mogelijkheden(1, trains):
     paths.append([t[0]])
 
-print(paths)
 #propagate paths
-
 for i in range(1, N):
         paths = propagate(paths, trains, i)
+        print(paths)
+        paths = remove_overhead(paths)
+        print(paths)
 
-# print(overstap_mogelijkheden(1, trains))
-
-print(paths)
 longest = 0
 for p in paths:
     l = len(trains_in_list(p))
