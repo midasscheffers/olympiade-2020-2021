@@ -7,7 +7,7 @@ trains = []
 for i in range(M):
     trains.append([i] + [int(i) for i in list(input().split(" "))])
 
-print(trains)
+# print(trains)
 
 def trains_in_list(wrd):
     trains = []
@@ -55,9 +55,18 @@ def remove_overhead(paths):
     temp = []
     sorted_by_len = split_lists_in_len(paths)
     for l in sorted_by_len:
-        filter_different_endings(l)
-        temp.append(l[0])
+        n_l = filter_different_endings(l)
+        temp.append(n_l[0])
     return temp
+
+    # make smaller
+    # temp = []
+    # leng = []
+    # endings = []
+    # for p in paths:
+    #     if p[-1] in endings:
+    #         if 
+    # return temp
 
 
 def overstap_mogelijkheden(station, trains):
@@ -92,15 +101,17 @@ for t in overstap_mogelijkheden(1, trains):
 #propagate paths
 for i in range(1, N):
         paths = propagate(paths, trains, i)
-        print(paths)
+        # print(paths)
+        # paths = clean_paths(paths)
         paths = remove_overhead(paths)
-        print(paths)
+        # print(paths)
 
 longest = 0
 for p in paths:
     l = len(trains_in_list(p))
     if l > longest:
         longest = l
+        l_path = p
 
 print(longest)
 
