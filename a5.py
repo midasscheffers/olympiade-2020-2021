@@ -92,9 +92,9 @@ for t in overstap_mogelijkheden(1, trains):
 #propagate paths
 for i in range(1, N):
         paths = propagate(paths, trains, i)
-        print(paths)
+        # print(paths)
         paths = remove_overhead(paths)
-        print(paths)
+        # print(paths)
 
 longest = 0
 for p in paths:
