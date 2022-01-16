@@ -1,12 +1,5 @@
 
-
-
-class Pin:
-    def __init__(self, x, y):
-        self.pos = [x, y]
-    
-    def update(self):
-        pass
+from select import select
 
 
 class Field:
@@ -28,7 +21,7 @@ class Field:
         self.start_ball = "B"
         self.blue_balls = 5
         self.red_balls = 5
-        self.output = []
+        self.output = ""
 
     def read_input(self):
         inp = input().split(" ")
@@ -57,18 +50,60 @@ class Field:
             print(line)
 
 
-    def drop_ball(color):
+    def drop_ball(self, color):
         if color == "B":
-            self.trigger(0, 3, color, 1)
+            self.blue_balls -= 1
+            self.trigger(3, 0, color, 1)
         elif color == "R":
-            self.trigger(0, 7, color, -1)
+            self.red_balls -= 1
+            self.trigger(7, 0, color, -1)
         else:
-            self.trigger(0, 3, "B", 1)
+            self.blue_balls -= 1
+            self.trigger(3, 0, "B", 1)
 
 
-    def trigger(x, y, color, dir):
-        if y > 10:
-            pass
+    def trigger(self, x, y, color, dir):
+        if x < 0 or x > 10:
+            print("halt")
+        if y > 9 and x != 5:
+            if x < 5:
+                print("drop blue")
+                self.output += color
+                self.drop_ball("B")
+            elif x >= 5:
+                print("drop red")
+                self.output += color
+                self.drop_ball("R")
+        elif self.board[y][x] == "L":
+            print("L", x, y)
+            self.board[y][x] = "R"
+            self.trigger(x-1, y+1, color, -1)
+        elif self.board[y][x] == "R":
+            print("R", x, y)
+            self.board[y][x] = "L"
+            self.trigger(x+1, y+1, color, 1)
+        elif self.board[y][x] == ">":
+            print(">", x, y)
+            self.trigger(x+1, y+1, color, 1)
+        elif self.board[y][x] == "<":
+            print("<", x, y)
+            self.trigger(x-1, y+1, color, -1)
+        elif self.board[y][x] == "X":
+            print("X", x, y)
+            self.trigger(x+dir, y+1, color, dir)
+        elif self.board[y][x] == "/":
+            print("/", x, y)
+            self.board[y][x] = "\\"
+            self.trigger(x-1, y+1, color, -1)
+        elif self.board[y][x] == "\\":
+            print("\\", x, y)
+            self.board[y][x] = "/"
+            self.trigger(x+1, y+1, color, 1)
+        else:
+            print(f"{self.board[y][x]}, {x}, {y}")
+    
+    def update_aj_gears(x, y):
+        pass
             
 
 
@@ -78,4 +113,6 @@ f.print_field()
 print()
 f.read_input()
 print()
+f.print_field()
+f.drop_ball("B")
 f.print_field()
