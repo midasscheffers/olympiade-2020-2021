@@ -1,0 +1,12 @@
+R 20 20
+.L. .L.
+.L.\o\.L.
+.L.LoLoL.L.
+>.L.\o\./.<
+.L.L.X.LoL.
+>.L.L.L./.<
+.L.R.L.LoL.
+>.L.L.L./.<
+.L.L.L.LoL.
+L./o/o/o/.R
+L
