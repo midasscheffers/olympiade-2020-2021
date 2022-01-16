@@ -39,14 +39,13 @@ def minste_woorden_met_alpha(woorden, alphabet, depth, words_looked):
     if alphabet == [] or woorden == []:
         return (score(words_looked), words_looked)
     w_met_alpha = woorden_met_letter(alphabet[0], woorden)
-    for i,w in enumerate(w_met_alpha):
+    for w in w_met_alpha:
         new_alfa = list_delete_list(alphabet, letters_in_word(w))
         new_woorden = list_delete_list(woorden, [w])
         next_step = minste_woorden_met_alpha(new_woorden, new_alfa, depth+1, words_looked+[w])
         temp.append(next_step)
 
     return min(temp)
-
 
 
 print(minste_woorden_met_alpha(WOORDEN, ALPHABET, 0, []))
