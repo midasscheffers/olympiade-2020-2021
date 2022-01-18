@@ -111,10 +111,7 @@ for t in stations[0]:
 for i in range(1, N+1):
         paths = propagate(paths, trains, i)
         # print(paths)
-<<<<<<< HEAD
-=======
-        paths = clean_paths(paths)
->>>>>>> a4d8549f913fa37d975dfee0c4aab83a4207036e
+        # paths = clean_paths(paths)
         paths = remove_overhead(paths)
         # print(paths)
 

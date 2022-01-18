@@ -1,5 +1,4 @@
 
-from select import select
 
 
 class Field:
@@ -51,68 +50,122 @@ class Field:
 
 
     def drop_ball(self, color):
+        trigger = None
         if color == "B":
             self.blue_balls -= 1
-            self.trigger(3, 0, color, 1)
+            if self.blue_balls >= 0:
+                trigger = self.trigger(3, 0, color, 1)
         elif color == "R":
             self.red_balls -= 1
-            self.trigger(7, 0, color, -1)
+            if self.red_balls >= 0:
+                trigger = self.trigger(7, 0, color, -1)
         else:
             self.blue_balls -= 1
-            self.trigger(3, 0, "B", 1)
+            if self.blue_balls >= 0:
+                trigger = self.trigger(3, 0, "B", 1)
+        return trigger
+
 
 
     def trigger(self, x, y, color, dir):
+        trigger = None
         if x < 0 or x > 10:
-            print("halt")
+            # print("halt")
+            pass
         if y > 9 and x != 5:
             if x < 5:
-                print("drop blue")
+                # print("drop blue")
                 self.output += color
-                self.drop_ball("B")
+                trigger = self.drop_ball("B")
             elif x >= 5:
-                print("drop red")
+                # print("drop red")
                 self.output += color
-                self.drop_ball("R")
+                trigger = self.drop_ball("R")
         elif self.board[y][x] == "L":
-            print("L", x, y)
+            # print("L", x, y)
             self.board[y][x] = "R"
-            self.trigger(x-1, y+1, color, -1)
+            trigger = (x-1, y+1, color, -1)
         elif self.board[y][x] == "R":
-            print("R", x, y)
+            # print("R", x, y)
             self.board[y][x] = "L"
-            self.trigger(x+1, y+1, color, 1)
+            trigger = (x+1, y+1, color, 1)
         elif self.board[y][x] == ">":
-            print(">", x, y)
-            self.trigger(x+1, y+1, color, 1)
+            # print(">", x, y)
+            trigger = (x+1, y+1, color, 1)
         elif self.board[y][x] == "<":
-            print("<", x, y)
-            self.trigger(x-1, y+1, color, -1)
+            # print("<", x, y)
+            trigger = (x-1, y+1, color, -1)
         elif self.board[y][x] == "X":
-            print("X", x, y)
-            self.trigger(x+dir, y+1, color, dir)
+            # print("X", x, y)
+            trigger = (x+dir, y+1, color, dir)
         elif self.board[y][x] == "/":
-            print("/", x, y)
-            self.board[y][x] = "\\"
-            self.trigger(x-1, y+1, color, -1)
+            # print("/", x, y)
+            # self.board[y][x] = "\\"
+            self.update_aj_gears(x, y)
+            self.clear_bs()
+            trigger = (x-1, y+1, color, -1)
         elif self.board[y][x] == "\\":
-            print("\\", x, y)
-            self.board[y][x] = "/"
-            self.trigger(x+1, y+1, color, 1)
+            # print("\\", x, y)
+            # self.board[y][x] = "/"
+            self.update_aj_gears(x, y)
+            self.clear_bs()
+            trigger = (x+1, y+1, color, 1)
         else:
-            print(f"{self.board[y][x]}, {x}, {y}")
+            # print(f"{self.board[y][x]}, {x}, {y}")
+            pass
+        
+        return trigger
     
-    def update_aj_gears(x, y):
-        pass
+
+    def update_aj_gears(self, x, y):
+        if self.board[y][x] == "o" or self.board[y][x] == "\\" or self.board[y][x] == "/": 
+            if self.board[y][x] == "\\":
+                self.board[y][x] = "/"
+            elif self.board[y][x] == "/":
+                self.board[y][x] = "\\"
+            self.board[y][x] += "b"
+            dirs = [[-1, 0], [0, -1], [1, 0], [0, 1]]
+            for d in dirs:
+                if x+d[0] > -1 and x+d[0] < 10 and y+d[1] > -1 and y+d[1] < 10:
+                    self.update_aj_gears(x+d[0], y+d[1])
+
+
+
+    def clear_bs(self):
+        for y in range(len(self.board)):
+            for x in range(len(self.board[y])):
+                if "b" in self.board[y][x]:
+                    self.board[y][x] = self.board[y][x][:-1]
+
+                    
             
 
 
 f = Field()
 
-f.print_field()
-print()
+# f.print_field()
+# print()
+
+
 f.read_input()
-print()
-f.print_field()
-f.drop_ball("B")
-f.print_field()
+
+t = f.drop_ball(f.start_ball)
+# print(t)
+halt = False
+while not halt:
+    t = f.trigger(t[0], t[1], t[2], t[3])
+    if t == None:
+        halt = True
+
+
+print(f.output)
+
+# f.update_aj_gears(3, 0)
+# f.clear_bs()
+
+# f.print_field()
+
+# f.update_aj_gears(2, 1)
+# f.clear_bs()
+
+# f.print_field()

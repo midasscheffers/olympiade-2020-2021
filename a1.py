@@ -1,10 +1,13 @@
 
 
-wrd = input()
+# wrd = input()
 
-letters = []
-for letter in wrd:
-    if letter not in letters:
-        letters.append(letter)
+# letters = []
+# for letter in wrd:
+#     if letter not in letters:
+#         letters.append(letter)
 
-print(len(letters))
+# print(len(letters))
+
+
+print(len(list(set(input()))))
